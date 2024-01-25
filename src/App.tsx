@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import coffee_list from './mocks/coffee_list.json'
 
 interface ICoffee {
@@ -10,10 +10,17 @@ interface ICoffee {
   quantity: number
 }
 
+let outRenderCount = 0
+
 export function App() {
   const [availableCoffees, setAvailableCoffees] =
     useState<ICoffee[]>(coffee_list)
   const [cart, setCart] = useState<ICoffee[]>([])
+  const [tipoPagamento, setTipoPagamento] = useState<
+    'credito' | 'debito' | 'dinheiro' | null
+  >()
+  const [sumItensValue, setSumItensValue] = useState('')
+
   const [formData, setFormData] = useState({
     cep: '',
     rua: '',
@@ -28,7 +35,12 @@ export function App() {
   //   setAvailableCoffees(coffee_list)
   // }, [])
 
-  function handleIncrementPrice(item: ICoffee) {
+  const renderCount = useRef(0)
+  useEffect(() => {
+    renderCount.current = renderCount.current + 1
+  })
+
+  function handleIncrementQnt(item: ICoffee) {
     setAvailableCoffees((preValue) =>
       preValue.map((el) => {
         if (el.name === item.name) {
@@ -39,10 +51,10 @@ export function App() {
     )
   }
 
-  function handleDecrementPrice(item: ICoffee) {
+  function handleDecrementQnt(item: ICoffee) {
     setAvailableCoffees((preValue) =>
       preValue.map((el) => {
-        if (el.name === item.name && el.quantity > 0) {
+        if (el.name === item.name && el.quantity > 1) {
           return { ...el, quantity: el.quantity - 1 }
         }
         return el
@@ -51,8 +63,6 @@ export function App() {
   }
 
   function handleAddItemToCart(item: ICoffee) {
-    // setCart((preValue) => [...preValue, item])
-
     if (item.quantity > 0) {
       setCart((preValue) => {
         const isItemInCart = preValue.some((e) => e.name === item.name)
@@ -61,7 +71,8 @@ export function App() {
           return [...preValue, item]
         }
 
-        return preValue
+        const updateExistent = preValue.filter((e) => e.name !== item.name)
+        return [...updateExistent, item]
       })
     }
 
@@ -82,7 +93,23 @@ export function App() {
 
   function handleSubmit(data: any) {
     data.preventDefault()
-    console.log('data', data)
+    // console.log('data', data)
+    console.log('form', formData, '\n\n\n')
+    console.log('cart', cart, '\n\n\n')
+    let preco = 0
+    cart.map((e) => {
+      console.log('e.price', e.price, e.quantity, '\n')
+      console.log('replace', e.price.replace(',', '.'), '\n')
+      console.log('parseFloat(e.price)', parseFloat(e.price), '\n')
+      console.log(
+        "e.price.replace(',', '.')",
+        parseFloat(e.price.replace(',', '.')) * e.quantity,
+        '\n',
+      )
+      return (preco += parseFloat(e.price.replace(',', '.')) * e.quantity)
+    })
+    console.log('price', preco.toFixed(2))
+    setSumItensValue(preco.toFixed(2))
   }
 
   // function handleChange(event: any) {
@@ -90,10 +117,17 @@ export function App() {
   //   setFormData((prevState)=>{...prevState, })
   // }
 
-  console.log('form', formData, '\n\n\n')
+  outRenderCount++
+
+  console.count('counter')
 
   return (
     <>
+      <div>
+        <span>outRenderCount: {outRenderCount}</span>
+        <br></br>
+        <span>renderCount: {renderCount.current}</span>
+      </div>
       <div>
         <h2>Cart Qnt: {cart.length > 0 && cart.length}</h2>
         {availableCoffees.map((coffee) => (
@@ -107,10 +141,10 @@ export function App() {
               <br />
               <span>{coffee.quantity}</span>
             </div>
-            <button onClick={() => handleIncrementPrice(coffee)}>
+            <button onClick={() => handleIncrementQnt(coffee)}>
               increment
             </button>
-            <button onClick={() => handleDecrementPrice(coffee)}>
+            <button onClick={() => handleDecrementQnt(coffee)}>
               decrement
             </button>
             <button
@@ -202,12 +236,14 @@ export function App() {
 
           <button type="submit">Confirmar</button>
         </form>
-
-        {/* <div>
-          <button>credito</button>
-          <button>debito</button>
-          <button>dinheiro</button>
-        </div> */}
+        <br></br>
+        <div>
+          <button onClick={() => setTipoPagamento('credito')}>credito</button>
+          <button onClick={() => setTipoPagamento('debito')}>debito</button>
+          <button onClick={() => setTipoPagamento('dinheiro')}>dinheiro</button>
+        </div>
+        <br></br>
+        <div>Price:{sumItensValue}</div>
       </div>
     </>
   )

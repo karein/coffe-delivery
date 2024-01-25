@@ -4,14 +4,14 @@
     "description": "coffe coffe",
     "price": "9,90",
     "tags":["coffe", "coffe"],
-    "quantity": 0
+    "quantity": 1
   },
   {
     "name": "coffe 2",
     "description": "coffe coffe",
     "price": "9,90",
     "tags":["coffe", "coffe"],
-    "quantity": 0
+    "quantity": 1
 
   },
   {
@@ -19,7 +19,7 @@
     "description": "coffe coffe",
     "price": "9,90",
     "tags":["coffe", "coffe"],
-    "quantity": 0
+    "quantity": 1
 
   },
   {
@@ -27,6 +27,6 @@
     "description": "coffe coffe",
     "price": "9,90",
     "tags":["coffe", "coffe"],
-    "quantity": 0
+    "quantity": 1
   }
 ]
