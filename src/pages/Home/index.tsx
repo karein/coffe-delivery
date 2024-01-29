@@ -1,65 +1,23 @@
 /* eslint-disable camelcase */
-import { useState } from 'react'
+import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 
-import coffee_list from '../../mocks/coffee_list.json'
-
-export interface ICoffee {
-  name: string
-  description: string
-  price: string
-  tags: string[]
-  quantity: number
-}
+import { CartContext } from '../../context/cartContext'
 
 export function Home() {
-  const [availableCoffees, setAvailableCoffees] =
-    useState<ICoffee[]>(coffee_list)
-  const [cart, setCart] = useState<ICoffee[]>([])
-
-  function handleAddItemToCart(item: ICoffee) {
-    if (item.quantity > 0) {
-      setCart((preValue) => {
-        const isItemInCart = preValue.some((e) => e.name === item.name)
-
-        if (!isItemInCart) {
-          return [...preValue, item]
-        }
-
-        const updateExistent = preValue.filter((e) => e.name !== item.name)
-        return [...updateExistent, item]
-      })
-    }
-
-    return null
-  }
-
-  function handleIncrementQnt(item: ICoffee) {
-    setAvailableCoffees((preValue) =>
-      preValue.map((el) => {
-        if (el.name === item.name) {
-          return { ...el, quantity: el.quantity + 1 }
-        }
-        return el
-      }),
-    )
-  }
-
-  function handleDecrementQnt(item: ICoffee) {
-    setAvailableCoffees((preValue) =>
-      preValue.map((el) => {
-        if (el.name === item.name && el.quantity > 1) {
-          return { ...el, quantity: el.quantity - 1 }
-        }
-        return el
-      }),
-    )
-  }
+  const {
+    cart,
+    availableCoffees,
+    handleAddItemToCart,
+    handleDecrementQnt,
+    handleIncrementQnt,
+  } = useContext(CartContext)
 
   console.log('CART HOME', cart)
 
   return (
     <>
+      <h2>QNT: {cart.length}</h2>
       <header>
         logo; local;
         <NavLink to="/cart" title="carrinho" state={{ cart }}>
