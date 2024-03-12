@@ -9,6 +9,7 @@ export interface ICoffee {
   price: string
   tags: string[]
   quantity: number
+  img: string
 }
 
 interface IAvailableCoffees {
@@ -17,6 +18,7 @@ interface IAvailableCoffees {
   price: string
   tags: string[]
   quantity: number
+  img: string
 }
 
 interface CartContextType {
@@ -75,7 +77,17 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   }
 
   function handleIncrementQnt(item: ICoffee) {
+    console.log('item', item)
     setAvailableCoffees((preValue) =>
+      preValue.map((el) => {
+        if (el.name === item.name) {
+          return { ...el, quantity: el.quantity + 1 }
+        }
+        return el
+      }),
+    )
+
+    setCart((preValue) =>
       preValue.map((el) => {
         if (el.name === item.name) {
           return { ...el, quantity: el.quantity + 1 }
@@ -90,6 +102,17 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
       preValue.map((el) => {
         if (el.name === item.name && el.quantity > 1) {
           return { ...el, quantity: el.quantity - 1 }
+        }
+        return el
+      }),
+    )
+
+    setCart((preValue) =>
+      preValue.map((el) => {
+        if (el.name === item.name && el.quantity > 1) {
+          return { ...el, quantity: el.quantity - 1 }
+        } else if (el.name === item.name && el.quantity <= 1) {
+          handleRemoveItemFromCart(el)
         }
         return el
       }),

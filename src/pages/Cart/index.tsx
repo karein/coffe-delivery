@@ -10,7 +10,7 @@ export function Cart() {
     handleRemoveItemFromCart,
   } = useContext(CartContext)
 
-  console.log('cart', cart)
+  // console.log('cart', cart)
   return (
     <div>
       {cart?.map((e: ICoffee) => (
