@@ -11,10 +11,12 @@ interface HeaderProps {
 export function Header({ cart }: HeaderProps) {
   return (
     <div className="py-8 flex flex-row justify-between">
-      <img src={logo} alt="" />
+      <NavLink to="/" title="home" state={{ cart }}>
+        <img src={logo} alt="" />
+      </NavLink>
 
       <div className="flex flex-row gap-3 text-sm">
-        <button className="flex flex-row bg-purple-light items-center text-base-purple p-2 rounded-md gap-1">
+        <button className="flex flex-row bg-purple-light items-center text-base-purple p-2 rounded-md gap-1 ">
           <MapPin size={22} weight="fill" />
           <span className="text-purple-dark">Porto Alegre, RS</span>
         </button>

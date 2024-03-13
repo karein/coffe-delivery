@@ -5,12 +5,11 @@ import {
   Timer,
   Package,
   Coffee,
-  Plus,
-  Minus,
 } from '@phosphor-icons/react'
 
-import { CartContext } from '../../context/cartContext'
 import { Header } from '../../components/header'
+import { CartContext } from '../../context/cartContext'
+import { CardCoffee } from '../../components/card-coffee'
 
 import bannerImg from '../../assets/coffe-delivery-banner.svg'
 
@@ -24,7 +23,7 @@ export function Home() {
   } = useContext(CartContext)
 
   return (
-    <>
+    <div className="mb-40">
       <Header cart={cart} />
 
       <div className="flex flex-row justify-between py-[94px]">
@@ -80,67 +79,21 @@ export function Home() {
       <h2 className="text-start font-extrabold text-3xl text-base-subtitle font-baloo2 mb-12">
         Nossos cafés
       </h2>
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-x-8 gap-y-10 mb-40">
+      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-x-8 gap-y-10 ">
         {availableCoffees.length > 0 ? (
           availableCoffees.map((coffee) => (
-            <div
+            <CardCoffee
               key={coffee.name}
-              className="bg-base-card p-5 text-center min-w-[256px] relative rounded-tl-md rounded-tr-[36px] rounded-bl-[36px] rounded-br-md"
-            >
-              <img
-                src={coffee.img}
-                alt=""
-                className="absolute top-[-20px] left-0 right-0 m-auto"
-              />
-              <div className="flex flex-col mt-[100px]">
-                <span className="font-bold text-xl text-base-subtitle font-baloo2">
-                  {coffee.name}
-                </span>
-                <span className="text-base-label text-sm mt-2">
-                  {coffee.description}
-                </span>
-
-                <div className="flex flex-row items-center justify-between mt-8">
-                  <div className="text-base-text text-sm font-roboto">
-                    <span>
-                      R$
-                      <span className="text-2xl font-baloo2">
-                        {' '}
-                        {coffee.price}
-                      </span>
-                    </span>
-                  </div>
-
-                  <div className="flex flex-row gap-2">
-                    <div className="bg-base-button rounded-md p-2 flex flex-row gap-1">
-                      <button onClick={() => handleIncrementQnt(coffee)}>
-                        <Plus size={14} color="#8047F8" />
-                      </button>
-                      <span>{coffee.quantity}</span>
-                      <button onClick={() => handleDecrementQnt(coffee)}>
-                        <Minus size={14} color="#8047F8" />
-                      </button>
-                    </div>
-                    <button
-                      disabled={coffee.quantity < 1}
-                      onClick={() => handleAddItemToCart(coffee)}
-                      className="bg-purple-dark rounded-md p-2"
-                    >
-                      <ShoppingCartSimple
-                        weight="fill"
-                        color="#F3F2F2"
-                        size={22}
-                      />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+              coffee={coffee}
+              handleIncrementQnt={handleIncrementQnt}
+              handleDecrementQnt={handleDecrementQnt}
+              handleAddItemToCart={handleAddItemToCart}
+            />
           ))
         ) : (
           <h3>Nenhum item encontrado!</h3>
         )}
       </div>
-    </>
+    </div>
   )
 }

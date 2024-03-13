@@ -16,6 +16,7 @@ module.exports = {
         'base-text': '#574F4D',
         'base-card': '#F3F2F2',
         'base-button': '#E6E5E5',
+        'base-input': '#EDEDED',
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],
