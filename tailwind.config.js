@@ -17,10 +17,14 @@ module.exports = {
         'base-card': '#F3F2F2',
         'base-button': '#E6E5E5',
         'base-input': '#EDEDED',
+        'base-hover': '#D7D5D5',
       },
       fontFamily: {
         roboto: ['Roboto', 'sans-serif'],
         baloo2: ['"Baloo 2"', 'sans-serif'],
+      },
+      ringColor: {
+        'purple-dark': '#4B2995',
       },
     },
   },

@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
 import { ShoppingCartSimple, Plus, Minus } from '@phosphor-icons/react'
 
-import { ICoffee } from '../context/cartContext'
+import { ICoffee, handleFuncProps } from '../context/cartContext'
 
 interface CardCoffeeProps {
   coffee: ICoffee
-  handleIncrementQnt: (coffee: ICoffee) => void
-  handleDecrementQnt: (coffee: ICoffee) => void
+  handleIncrementQnt: ({ name_item }: handleFuncProps) => void
+  handleDecrementQnt: ({ name_item }: handleFuncProps) => void
   handleAddItemToCart: (coffee: ICoffee) => void
 }
 
@@ -41,11 +41,15 @@ export function CardCoffee({
 
           <div className="flex flex-row gap-2">
             <div className="bg-base-button rounded-md p-2 flex flex-row gap-1">
-              <button onClick={() => handleIncrementQnt(coffee)}>
+              <button
+                onClick={() => handleIncrementQnt({ name_item: coffee.name })}
+              >
                 <Plus size={14} className="text-base-purple" />
               </button>
               <span>{coffee.quantity}</span>
-              <button onClick={() => handleDecrementQnt(coffee)}>
+              <button
+                onClick={() => handleDecrementQnt({ name_item: coffee.name })}
+              >
                 <Minus size={14} className="text-base-purple" />
               </button>
             </div>

@@ -21,13 +21,17 @@ interface IAvailableCoffees {
   img: string
 }
 
+export interface handleFuncProps {
+  name_item: string
+}
+
 interface CartContextType {
   cart: ICoffee[]
   availableCoffees: IAvailableCoffees[]
-  handleIncrementQnt: (item: ICoffee) => void
-  handleDecrementQnt: (item: ICoffee) => void
+  handleIncrementQnt: ({ name_item }: handleFuncProps) => void
+  handleDecrementQnt: ({ name_item }: handleFuncProps) => void
   handleAddItemToCart: (item: ICoffee) => void
-  handleRemoveItemFromCart: (item: ICoffee) => void
+  handleRemoveItemFromCart: ({ name_item }: handleFuncProps) => void
 }
 
 interface CartContextProviderProps {
@@ -58,11 +62,11 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     return null
   }
 
-  function handleRemoveItemFromCart(item: ICoffee) {
+  function handleRemoveItemFromCart({ name_item }: handleFuncProps) {
     try {
       const cartCopy = [...cart]
       const findIndexProduct = cartCopy.findIndex(
-        (product) => product.name === item.name,
+        (product) => product.name === name_item,
       )
 
       if (findIndexProduct !== -1) {
@@ -76,11 +80,10 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     }
   }
 
-  function handleIncrementQnt(item: ICoffee) {
-    console.log('item', item)
+  function handleIncrementQnt({ name_item }: handleFuncProps) {
     setAvailableCoffees((preValue) =>
       preValue.map((el) => {
-        if (el.name === item.name) {
+        if (el.name === name_item) {
           return { ...el, quantity: el.quantity + 1 }
         }
         return el
@@ -89,7 +92,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
 
     setCart((preValue) =>
       preValue.map((el) => {
-        if (el.name === item.name) {
+        if (el.name === name_item) {
           return { ...el, quantity: el.quantity + 1 }
         }
         return el
@@ -97,10 +100,10 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     )
   }
 
-  function handleDecrementQnt(item: ICoffee) {
+  function handleDecrementQnt({ name_item }: handleFuncProps) {
     setAvailableCoffees((preValue) =>
       preValue.map((el) => {
-        if (el.name === item.name && el.quantity > 1) {
+        if (el.name === name_item && el.quantity > 1) {
           return { ...el, quantity: el.quantity - 1 }
         }
         return el
@@ -109,10 +112,10 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
 
     setCart((preValue) =>
       preValue.map((el) => {
-        if (el.name === item.name && el.quantity > 1) {
+        if (el.name === name_item && el.quantity > 1) {
           return { ...el, quantity: el.quantity - 1 }
-        } else if (el.name === item.name && el.quantity <= 1) {
-          handleRemoveItemFromCart(el)
+        } else if (el.name === name_item && el.quantity <= 1) {
+          handleRemoveItemFromCart({ name_item: el.name })
         }
         return el
       }),
