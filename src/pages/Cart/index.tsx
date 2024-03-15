@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { redirect } from 'react-router-dom'
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react'
 import {
   MapPinLine,
@@ -46,14 +47,30 @@ interface ResumoPedido {
   totais: Totais
 }
 
-// interface PedidoFechado {
-//   endereco: Endereco
-//   forma_pagamento: PaymentType
-//   itens: ItensPedidos[]
-//   total_itens: number
-//   valor_entrega: number
-//   valor_total: number
-// }
+interface PedidoFechado {
+  endereco: Endereco
+  forma_pagamento: PaymentType
+  resumo_pedido: ResumoPedido
+}
+
+const enderecoObj = {
+  cep: '',
+  rua: '',
+  numero: '',
+  complemento: '',
+  bairro: '',
+  cidade: '',
+  uf: '',
+}
+
+const resumoPedidoObj = {
+  itens: [],
+  totais: {
+    total_itens: 0,
+    valor_entrega: 0,
+    valor_total: 0,
+  },
+}
 
 export function Cart() {
   const {
@@ -63,47 +80,20 @@ export function Cart() {
     handleRemoveItemFromCart,
   } = useContext(CartContext)
 
-  const enderecoObj = {
-    cep: '',
-    rua: '',
-    numero: '',
-    complemento: '',
-    bairro: '',
-    cidade: '',
-    uf: '',
-  }
-
-  const itens_pedido_obj = [
-    {
-      tipo: '',
-      quantidade: 0,
-      valor: 0,
-    },
-  ]
-
-  // const [totais, setTotais] = useState<Totais>({
-  //   entrega: 3.5,
-  //   total_itens: 0,
-  //   total: 0,
-  // })
   const [formEndereco, setFormEndereco] = useState<Endereco>(enderecoObj)
   const [paymentType, setPaymentType] = useState<PaymentType>(null)
-  // const [pedidoFinal, setPedidoFinal] = useState<PedidoFechado>({
-  //   endereco: enderecoObj,
-  //   valor_entrega: entrega,
-  //   valor_total: total,
-  //   forma_pagamento: paymentType,
-  //   total_itens: totalItens,
-  //   itens: itens_pedido_obj,
-  // })
-  const [resumoPedido, setResumoPedido] = useState<ResumoPedido>({
-    itens: [],
-    totais: {
-      total_itens: 0,
-      valor_entrega: 0,
-      valor_total: 0,
-    },
+  const [resumoPedido, setResumoPedido] =
+    useState<ResumoPedido>(resumoPedidoObj)
+  const [pedidoFinal, setPedidoFinal] = useState<PedidoFechado>({
+    endereco: enderecoObj,
+    forma_pagamento: null,
+    resumo_pedido: resumoPedidoObj,
   })
+  // const [pedidoFinal, setPedidoFinal] = useState<PedidoFechado>({
+  //   endereco: formEndereco,
+  //   forma_pagamento: paymentType,
+  //   resumo_pedido: resumoPedido,
+  // })
 
   useEffect(() => {
     // if (cart.length > 0) {
@@ -120,15 +110,6 @@ export function Cart() {
       const totalItens = pedidosArr.reduce((acc, item) => acc + item.valor, 0)
       const valorEntrega = 3.5
       const valorTotal = totalItens + valorEntrega
-
-      console.log({
-        itens: pedidosArr,
-        totais: {
-          total_itens: totalItens,
-          valor_entrega: valorEntrega,
-          valor_total: valorTotal,
-        },
-      })
 
       return {
         ...prevState,
@@ -147,17 +128,19 @@ export function Cart() {
   const submitConfirmarPedido = (event: FormEvent) => {
     event.preventDefault()
 
-    const pedido = [...itens_pedido_obj]
+    if (!paymentType) {
+      alert('Selecione uma forma de pagamento!')
+    }
 
-    cart.map((e) => {
-      return pedido.push({
-        quantidade: e.quantity,
-        tipo: e.name,
-        valor: parseFloat(e.price.replace(',', '.')) * e.quantity,
-      })
-    })
+    const finishOrder = {
+      endereco: formEndereco,
+      forma_pagamento: paymentType,
+      resumo_pedido: resumoPedido,
+    }
 
-    console.log('formEndereco', formEndereco)
+    console.log('finishOrder', finishOrder)
+    setPedidoFinal({ ...finishOrder })
+    return redirect('/finish-order')
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -203,7 +186,7 @@ export function Cart() {
                 </div>
               </div>
 
-              <div className="grid gap-x-3 grid-cols-8 gap-y-4 text-sm text-base-text">
+              <div className="grid gap-x-3 xl:grid-cols-8 gap-y-4 text-sm text-base-text">
                 <input
                   required
                   name="cep"
@@ -286,7 +269,7 @@ export function Cart() {
                 </div>
               </div>
 
-              <ul className="text-base-text text-xs gap-3 grid xl:grid-cols-3 ">
+              <ul className="text-base-text text-xs gap-3 grid xl:grid-cols-3">
                 <li>
                   <input
                     type="radio"
@@ -347,7 +330,7 @@ export function Cart() {
         </div>
 
         {/* Resumo Pedido - cafés selecionados */}
-        <div className="flex flex-col gap-3 md:flex-1">
+        <div className="flex flex-col gap-3 xl:max-w-[450px] md:flex-1">
           <span className="text-base-subtitle font-baloo2 font-bold text-lg">
             Cafés selecionados
           </span>
@@ -442,8 +425,9 @@ export function Cart() {
 
             {/* <div> */}
             <button
+              disabled={resumoPedido.itens.length < 1}
               type="submit"
-              className="w-full bg-base-yellow text-white p-3 font-bold text-sm rounded-md hover:bg-yellow-dark transition-all"
+              className="w-full bg-base-yellow text-white p-3 font-bold text-sm rounded-md hover:bg-yellow-dark transition-all  disabled:bg-yellow-dark disabled:opacity-60"
             >
               CONFIRMAR PEDIDO
             </button>
