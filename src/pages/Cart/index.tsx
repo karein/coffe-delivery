@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { redirect } from 'react-router-dom'
+import { redirect, useNavigate } from 'react-router-dom'
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react'
 import {
   MapPinLine,
@@ -17,9 +17,9 @@ import { Header } from '../../components/header'
 
 // type PaymentType = 'credit-card' | 'debit-card' | 'money' | null
 
-type PaymentType = string | null
+export type PaymentType = string | null
 
-interface Endereco {
+export interface Endereco {
   cep: string
   rua: string
   numero: string
@@ -73,6 +73,8 @@ const resumoPedidoObj = {
 }
 
 export function Cart() {
+  const navigate = useNavigate()
+
   const {
     cart,
     handleIncrementQnt,
@@ -140,7 +142,9 @@ export function Cart() {
 
     console.log('finishOrder', finishOrder)
     setPedidoFinal({ ...finishOrder })
-    return redirect('/finish-order')
+    return navigate('/finish-order', {
+      state: { endereco: formEndereco, forma_pagamento: paymentType },
+    })
   }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
