@@ -100,7 +100,7 @@ export function FinishOrder() {
           <img
             className="max-h-[293px] max-w-[492px]"
             src="/assets/coffe-delivery-finish-illustation.svg"
-            alt="aaaaa"
+            alt=""
           />
         </div>
       </div>
